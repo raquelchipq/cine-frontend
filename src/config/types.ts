@@ -9,6 +9,8 @@ export interface MenuItem {
   heading?: string;
   children?: MenuConfig;
   disabled?: boolean;
+  /** Roles que ven la entrada. Sin roles, la ve cualquiera con sesion. */
+  roles?: string[];
   collapse?: boolean;
   collapseTitle?: string;
   expandTitle?: string;

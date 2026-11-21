@@ -1,6 +1,12 @@
+/**
+ * Forma de los datos del modulo de peliculas.
+ *
+ * `Pelicula` es lo que viene dentro de `RespuestaPaginada` en GET /peliculas.
+ * `CrearPelicula` es lo que manda el formulario y `PeliculaCreada` lo que
+ * devuelve POST /peliculas: el backend renombra los campos
+ * (duracionMinutos -> duracion, fechaEstreno -> fecha) y no manda imagenes.
+ */
 
-// get
-// catalogo de pelicula
 export interface Pelicula {
   id: number;
   titulo: string;
@@ -8,20 +14,28 @@ export interface Pelicula {
   duracionMinutos: number;
   fechaEstreno: string;
   activo: boolean;
-  // Solo los nombres del archivo, no las imagenes
-  // URL se armando con {apiUrl}/files/pelicula/{nombre}
+  // Solo los nombres de archivo, no las imagenes.
+  // La URL sale de peliculaService.urlImagen(nombre)
   imagenes: string[];
 }
 
-// Es generico es un hueco que rrelena al usarlo
-// asi la RespuestaPaginada<Pelicula> sirvir para las peliculas
+//Cuerpo del formulario de nueva pelicula.
+export interface CrearPelicula {
+  titulo: string;
+  sinopsis: string;
+  duracionMinutos: number;
+  /** Formato AAAA-MM-DD */
+  fechaEstreno: string;
+  activo: boolean;
+}
 
-export interface RespuestaPaginada<T> {
-  status: string;
-  message?: string;
-  data: T[];
-  total: number;
-  pagina: number;
-  porPagina: number;
-  totalPaginas: number;
+//Respuesta real de POST /peliculas, verificada contra el backend.
+export interface PeliculaCreada {
+  id: number;
+  titulo: string;
+  sinopsis: string;
+  duracion: number;
+  fecha: string;
+  activo?: boolean;
+  imagenes?: unknown[];
 }

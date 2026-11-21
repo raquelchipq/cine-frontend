@@ -1,0 +1,19 @@
+# Lo que no debe viajar al contexto de build
+node_modules
+dist
+dist-ssr
+*.local
+
+# Control de versiones
+.git
+.gitignore
+
+# Variables de entorno reales: en compose se inyectan por `environment`
+.env
+.env.local
+.env.*.local
+
+# Logs y temporales
+logs
+*.log
+.DS_Store

@@ -1,5 +1,14 @@
 /* Tailwind Core */
-@import 'tailwindcss';
+/*
+ * source(none) desactiva la deteccion automatica de archivos y abajo se
+ * declaran solo las carpetas de la app. Sin esto, Tailwind recorre todo el
+ * proyecto (incluido node_modules) y en Docker sobre un bind mount de Windows
+ * cada recompilacion tarda varios minutos.
+ */
+@import 'tailwindcss' source(none);
+
+@source '../../index.html';
+@source '../../src';
 
 /* ReUI Configs */
 @import './config.reui.css';

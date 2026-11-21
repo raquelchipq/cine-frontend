@@ -49,8 +49,8 @@ function storeLeaf(path: string, value: unknown) {
       `${LOCAL_STORAGE_PREFIX}${path}`,
       JSON.stringify(value),
     );
-  } catch (err) {
-    console.error('LocalStorage write error:', err);
+  } catch {
+    // Escritura fallida: la preferencia no se guarda, la pantalla sigue igual
   }
 }
 
@@ -59,8 +59,8 @@ function getLeafFromStorage(path: string): any {
   try {
     const item = localStorage.getItem(`${LOCAL_STORAGE_PREFIX}${path}`);
     return item ? JSON.parse(item) : undefined;
-  } catch (err) {
-    console.error('LocalStorage read error:', err);
+  } catch {
+    // Lectura fallida: se devuelve undefined, igual que una clave inexistente
     return undefined;
   }
 }

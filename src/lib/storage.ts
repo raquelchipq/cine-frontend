@@ -1,3 +1,10 @@
+/**
+ * Lee y escribe en el localStorage del navegador.
+ *
+ * Los catch quedan mudos a proposito: si el navegador bloquea el
+ * almacenamiento la pantalla sigue funcionando, solo pierde el dato.
+ */
+
 const getData = (key: string): unknown | undefined => {
   try {
     const data = localStorage.getItem(key);
@@ -5,16 +12,16 @@ const getData = (key: string): unknown | undefined => {
     if (data) {
       return JSON.parse(data);
     }
-  } catch (error) {
-    console.error('Read from local storage', error);
+  } catch {
+    // Lectura fallida (JSON invalido o almacenamiento bloqueado): no hay dato
   }
 };
 
 const setData = (key: string, value: unknown): void => {
   try {
     localStorage.setItem(key, JSON.stringify(value));
-  } catch (error) {
-    console.error('Save in local storage', error);
+  } catch {
+    // Escritura fallida (almacenamiento lleno o bloqueado): se ignora
   }
 };
 

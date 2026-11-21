@@ -26,6 +26,8 @@ import { Switch } from '@/components/ui/switch';
  * Se quitaron los enlaces de la plantilla (perfil, facturación, equipos…)
  * porque apuntaban a páginas demo que ya no existen. Quedan las opciones que
  * sí funcionan: idioma, tema oscuro y cerrar sesión.
+ *
+ * El nombre y los roles salen de la sesion real, no de un texto fijo.
  */
 export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
   const { logout, user } = useAuth();
@@ -42,7 +44,7 @@ export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
         <div className="flex flex-col gap-1 p-3">
           <span className="text-sm font-semibold text-mono">{nombre}</span>
           <span className="text-xs text-muted-foreground">
-            Sesion de prueba
+            {user?.roles.length ? user.roles.join(', ') : 'Sin roles'}
           </span>
         </div>
 
@@ -91,7 +93,12 @@ export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
         <DropdownMenuSeparator />
 
         <div className="p-2">
-          <Button variant="outline" size="sm" className="w-full" onClick={logout}>
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full"
+            onClick={logout}
+          >
             Cerrar sesión
           </Button>
         </div>

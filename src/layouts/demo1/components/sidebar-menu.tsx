@@ -1,7 +1,15 @@
 'use client';
 
+/**
+ * Menu lateral.
+ *
+ * Las entradas salen de MENU_SIDEBAR y pasan por `menuPorRol`, para no ofrecer
+ * pantallas que el rol de la sesion no puede abrir.
+ */
 import { JSX, useCallback } from 'react';
+import { useAuth } from '@/auth/context/auth-context';
 import { Link, useLocation } from 'react-router-dom';
+import { menuPorRol } from '@/config/menu-por-rol';
 import { MENU_SIDEBAR } from '@/config/menu.config';
 import { MenuConfig, MenuItem } from '@/config/types';
 import { cn } from '@/lib/utils';
@@ -19,6 +27,7 @@ import { Badge } from '@/components/ui/badge';
 
 export function SidebarMenu() {
   const { pathname } = useLocation();
+  const { user } = useAuth();
   // Memoize matchPath to prevent unnecessary re-renders
   const matchPath = useCallback(
     (path: string): boolean =>
@@ -217,7 +226,7 @@ export function SidebarMenu() {
         collapsible
         classNames={classNames}
       >
-        {buildMenu(MENU_SIDEBAR)}
+        {buildMenu(menuPorRol(MENU_SIDEBAR, user?.roles ?? []))}
       </AccordionMenu>
     </div>
   );

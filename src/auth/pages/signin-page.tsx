@@ -1,9 +1,16 @@
+/**
+ * Formulario de ingreso.
+ *
+ * Llama a `login` del proveedor de sesion (que devuelve la sesion) y manda al
+ * usuario a `next` o, si no venia de ninguna ruta, al destino de su rol.
+ */
 import { useState } from 'react';
 import { useAuth } from '@/auth/context/auth-context';
+import { destinoPorRol } from '@/auth/destino-por-rol';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,13 +34,16 @@ export function SignInPage() {
   const [procesando, setProcesando] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // A donde volver despues de entrar (lo pone RequireAuth)
+  const next = searchParams.get('next');
+
   const form = useForm<SigninSchemaType>({
     resolver: zodResolver(getSigninSchema()),
-    // Credenciales por defecto de la plantilla. Estan a la vista a proposito:
-    // todavia no hay backend, se valida contra el proveedor local.
+    // Credenciales de prueba del entorno local. Estan a la vista a proposito:
+    // son las que crearon los endpoints del diplomado.
     defaultValues: {
-      usuario: 'demo',
-      contrasena: 'demo123',
+      usuario: 'FAVIO1234567',
+      contrasena: 'admin123',
       recordarme: true,
     },
   });
@@ -43,10 +53,10 @@ export function SignInPage() {
       setProcesando(true);
       setError(null);
 
-      await login(values.usuario, values.contrasena);
+      const sesion = await login(values.usuario, values.contrasena);
 
-      // Vuelve a donde el usuario quería entrar antes del login
-      navigate(searchParams.get('next') || '/');
+      // El `next` manda; si no hay, cada rol tiene su destino
+      navigate(next || destinoPorRol(sesion.roles));
     } catch (err) {
       setError(
         err instanceof Error
@@ -66,8 +76,8 @@ export function SignInPage() {
           Ingresa con tu usuario para continuar
         </p>
         <p className="text-xs text-muted-foreground">
-          Acceso de prueba: <span className="font-medium">demo</span> /{' '}
-          <span className="font-medium">demo123</span>
+          Acceso de prueba: <span className="font-medium">FAVIO1234567</span> /{' '}
+          <span className="font-medium">admin123</span> (rol ADMIN)
         </p>
       </div>
 
@@ -145,6 +155,16 @@ export function SignInPage() {
           </Button>
         </form>
       </Form>
+
+      <p className="text-center text-sm text-muted-foreground">
+        ¿No tienes cuenta?{' '}
+        <Link
+          to={`/auth/signup${next ? `?next=${encodeURIComponent(next)}` : ''}`}
+          className="font-medium text-primary hover:underline"
+        >
+          Registrate
+        </Link>
+      </p>
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import {
+  BookmarkCheck,
   CalendarDays,
   Clapperboard,
   Home,
-  Popcorn,
   Ticket,
   UserCog,
   Users,
@@ -12,63 +12,63 @@ import { type MenuConfig } from './types';
 /**
  * Menú de la aplicación de cine.
  *
- * Las rutas que aún no existen quedan con `disabled: true` para que se vean
- * en la barra lateral pero no lleven a un 404. Al construir cada pantalla, se
- * quita esa bandera y se agrega la ruta en `app-routing-setup.tsx`.
- *
+ * Agrupado por uso: general, operación del cine y gestión del sistema.
+ * `roles` marca quien ve cada entrada; lo aplica `menu-por-rol.ts`.
  */
 export const MENU_SIDEBAR: MenuConfig = [
   {
     title: 'Inicio',
     icon: Home,
-    path: '/',
+    path: '/inicio',
   },
-  { heading: 'Cartelera' },
+  { heading: 'Cartelera y cine' },
   {
-    title: 'Funciones',
+    title: 'Cartelera',
     icon: CalendarDays,
     path: '/cartelera',
-    // disabled: true,
   },
   {
     title: 'Películas',
     icon: Clapperboard,
     path: '/peliculas',
-    // disabled: true,
   },
-  { heading: 'Ventas' },
+  { heading: 'Mi cuenta' },
   {
-    title: 'Reservar',
+    title: 'Reservar butacas',
     icon: Ticket,
-    path: '/reservas/nueva',
-    disabled: true,
+    // Reservar arranca eligiendo funcion en la cartelera. El backend solo
+    // acepta POST /reservas con rol CLIENTE.
+    path: '/cartelera',
+    roles: ['CLIENTE'],
   },
   {
     title: 'Mis reservas',
-    icon: Popcorn,
-    path: '/reservas',
-    disabled: true,
+    icon: BookmarkCheck,
+    path: '/mis-reservas',
+    roles: ['CLIENTE'],
   },
-  { heading: 'Administración' },
+  { heading: 'Gestión del cine' },
   {
     title: 'Personas',
     icon: Users,
     path: '/personas',
-    disabled: true,
+    roles: ['ADMIN', 'GERENTE'],
   },
+  { heading: 'Sistema' },
   {
-    title: 'Roles',
+    title: 'Roles y permisos',
     icon: UserCog,
+    // Solo ADMIN: POST /auth/rol-usuario es exclusivo del ADMIN
     path: '/roles',
-    disabled: true,
+    roles: ['ADMIN'],
   },
 ];
 
 /** El menú superior reutiliza las mismas entradas: no hay mega menú que mantener. */
 export const MENU_MEGA: MenuConfig = [
-  { title: 'Inicio', path: '/' },
-  { title: 'Cartelera', path: '/cartelera'},
-  { title: 'Películas', path: '/peliculas'},
+  { title: 'Inicio', path: '/inicio' },
+  { title: 'Cartelera', path: '/cartelera' },
+  { title: 'Películas', path: '/peliculas' },
 ];
 
 export const MENU_MEGA_MOBILE: MenuConfig = MENU_MEGA;
